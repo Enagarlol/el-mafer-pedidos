@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>El Mafer · Pollo Asado</title>
+  <meta name="description" content="Pide tu pollo asado, campero o BBQ a domicilio o pasa a recogerlo.">
+  <meta name="theme-color" content="#3A1E12">
+  <link rel="icon" href="assets/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="#" class="brand">
+      <img src="assets/logo.jpg" alt="El Mafer Pollo Asado" width="48" height="48">
+      <span>El Mafer</span>
+    </a>
+    <nav>
+      <a href="#menu">Menú</a>
+      <a href="#ubicacion">Ubicación</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Paso 1: ¿Cómo lo quieres? -->
+    <section class="hero">
+      <img class="hero-logo" src="assets/logo.jpg" alt="">
+      <div class="hero-text">
+        <p class="eyebrow">🔥 Recién salido del carbón</p>
+        <h1>Tu pollo, como tú lo quieras</h1>
+        <p class="status" id="status"></p>
+        <div class="mode-toggle" role="radiogroup" aria-label="Tipo de pedido">
+          <button class="mode" role="radio" data-mode="domicilio" aria-checked="true">
+            <span class="mode-icon">🛵</span>
+            <span><strong>A domicilio</strong><small id="envio-label"></small></span>
+          </button>
+          <button class="mode" role="radio" data-mode="recoger" aria-checked="false">
+            <span class="mode-icon">🏪</span>
+            <span><strong>Paso a recoger</strong><small>Listo en ~20 min</small></span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Paso 2: Menú -->
+    <section id="menu" class="menu">
+      <h2>Elige tu pollo</h2>
+      <div class="chips" id="chips" role="tablist"></div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <!-- Ubicación -->
+    <section id="ubicacion" class="location">
+      <h2>¿Dónde recoger?</h2>
+      <div class="location-wrap">
+        <div class="branches" id="branches"></div>
+        <iframe id="map" title="Mapa de la sucursal" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>El Mafer · Pollo Asado — hecho con 🔥 y cariño</p>
+  </footer>
+
+  <!-- Botón flotante del carrito -->
+  <button class="cart-fab" id="cart-fab" aria-label="Ver mi pedido" hidden>
+    <span class="cart-count" id="cart-count">0</span>
+    <span>Ver mi pedido</span>
+    <strong id="cart-fab-total">$0</strong>
+  </button>
+
+  <!-- Modal: personalizar producto -->
+  <dialog id="product-dialog" class="sheet">
+    <form method="dialog" id="product-form"></form>
+  </dialog>
+
+  <!-- Panel: carrito y checkout -->
+  <dialog id="cart-dialog" class="sheet">
+    <div class="sheet-head">
+      <h3>Tu pedido</h3>
+      <button class="icon-btn" data-close aria-label="Cerrar">✕</button>
+    </div>
+    <div class="mode-mini" role="radiogroup" aria-label="Tipo de pedido">
+      <button role="radio" data-mode="domicilio">🛵 A domicilio</button>
+      <button role="radio" data-mode="recoger">🏪 Recoger</button>
+    </div>
+    <ul class="cart-list" id="cart-list"></ul>
+    <form id="checkout" class="checkout">
+      <fieldset>
+        <legend>Tus datos</legend>
+        <label>Nombre <input name="nombre" required autocomplete="name"></label>
+        <label>Teléfono <input name="telefono" type="tel" required autocomplete="tel" pattern="[0-9 +()-]{10,}"></label>
+      </fieldset>
+
+      <fieldset data-show="domicilio">
+        <legend>Entrega</legend>
+        <label>Dirección <input name="direccion" autocomplete="street-address" placeholder="Calle, número, colonia"></label>
+        <label>Referencias <input name="referencias" placeholder="Portón negro, frente a la tienda…"></label>
+      </fieldset>
+
+      <fieldset data-show="recoger">
+        <legend>Recoger en</legend>
+        <label>Sucursal <select name="sucursal" id="sucursal-select"></select></label>
+        <label>Hora <select name="hora" id="hora-select"></select></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Pago</legend>
+        <div class="pay-options">
+          <label class="pill"><input type="radio" name="pago" value="Efectivo" checked> 💵 Efectivo</label>
+          <label class="pill"><input type="radio" name="pago" value="Tarjeta"> 💳 Tarjeta</label>
+          <label class="pill"><input type="radio" name="pago" value="Transferencia"> 📲 Transferencia</label>
+        </div>
+        <label data-show="domicilio" id="cambio-wrap">¿Con cuánto pagas? <input name="cambio" type="number" min="0" placeholder="Para llevarte cambio"></label>
+        <label>Notas <textarea name="notas" rows="2" placeholder="Sin cebolla, salsa aparte…"></textarea></label>
+      </fieldset>
+
+      <div class="totals" id="totals"></div>
+      <button type="submit" class="btn-primary btn-block">Enviar pedido por WhatsApp</button>
+    </form>
+  </dialog>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
