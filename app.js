@@ -16,7 +16,9 @@
     cart: Array.isArray(saved.cart) ? saved.cart : [],
     cat: "todos",
     branch: C.sucursales[0].id,
+    ubicacion: null, // { lat, lng, precision } cuando el cliente comparte su GPS
   };
+  const linkMapa = (u) => `https://maps.google.com/?q=${u.lat.toFixed(6)},${u.lng.toFixed(6)}`;
 
   const subtotal = () => state.cart.reduce((s, i) => s + i.precio * i.qty, 0);
   // El envío depende de la ubicación: aquí solo se suma el mínimo y el negocio lo confirma por WhatsApp
@@ -62,7 +64,8 @@
     state.mode = mode;
     $$("[data-mode]").forEach((b) => b.setAttribute("aria-checked", b.dataset.mode === mode));
     $$("[data-show]").forEach((el) => (el.hidden = el.dataset.show !== mode));
-    $("[name=direccion]").required = mode === "domicilio";
+    // Con la ubicación compartida, la dirección escrita ya no es obligatoria
+    $("[name=direccion]").required = mode === "domicilio" && !state.ubicacion;
     store.save();
     renderCart();
   }
@@ -295,7 +298,11 @@
       ``,
       domicilio ? `*ENTREGA*` : `*RECOGE*`,
       ...(domicilio
-        ? [`${f.direccion}`, f.referencias ? `_Ref: ${f.referencias}_` : null]
+        ? [
+            f.direccion || null,
+            f.referencias ? `_Ref: ${f.referencias}_` : null,
+            state.ubicacion ? `Ubicación: ${linkMapa(state.ubicacion)}` : null,
+          ]
         : [`${suc.nombre}`, `Hora: *${f.hora}*`]),
       ``,
       `*PAGO*`,
@@ -319,8 +326,40 @@
     state.cart = [];
     store.save();
     renderCart();
+    setUbicacion(null);
     $("#cart-dialog").close();
   }
+
+  // ---------- Ubicación del cliente (GPS del celular) ----------
+  function setUbicacion(u, mensaje) {
+    state.ubicacion = u;
+    const st = $("#geo-status");
+    st.hidden = !u && !mensaje;
+    st.className = "geo-status" + (u ? " ok" : "");
+    st.innerHTML = u
+      ? `✅ Ubicación agregada (precisión ~${Math.round(u.precision)} m) ·
+         <a href="${linkMapa(u)}" target="_blank" rel="noopener">Ver</a> ·
+         <button type="button" id="geo-quitar">Quitar</button>`
+      : mensaje || "";
+    $("#geo-btn").textContent = u ? "📍 Actualizar mi ubicación" : "📍 Usar mi ubicación actual";
+    $("[name=direccion]").required = state.mode === "domicilio" && !u;
+  }
+
+  function pedirUbicacion() {
+    if (!navigator.geolocation) return setUbicacion(null, "Tu navegador no permite compartir la ubicación. Escribe tu dirección.");
+    setUbicacion(state.ubicacion, "Buscando tu ubicación…");
+    $("#geo-status").hidden = false;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => setUbicacion({ lat: pos.coords.latitude, lng: pos.coords.longitude, precision: pos.coords.accuracy }),
+      (err) => setUbicacion(null, err.code === err.PERMISSION_DENIED
+        ? "No diste permiso de ubicación. Actívalo en tu navegador o escribe tu dirección."
+        : "No pudimos obtener tu ubicación. Inténtalo de nuevo o escribe tu dirección."),
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
+    );
+  }
+
+  $("#geo-btn").addEventListener("click", pedirUbicacion);
+  $("#geo-status").addEventListener("click", (e) => { if (e.target.id === "geo-quitar") setUbicacion(null); });
 
   // ---------- Eventos ----------
   document.addEventListener("click", (e) => {

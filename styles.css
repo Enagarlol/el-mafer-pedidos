@@ -212,6 +212,15 @@ button { font: inherit; cursor: pointer; }
   border: 2px solid #ead8c3; background: #fff; color: var(--texto);
 }
 .checkout input:focus, .checkout select:focus, .checkout textarea:focus { outline: none; border-color: var(--fuego); }
+.btn-geo {
+  padding: 12px; border-radius: 12px; border: 2px dashed var(--fuego);
+  background: #fff; color: var(--cacao); font-weight: 800;
+}
+.btn-geo:hover { background: var(--papel); }
+.geo-status { margin: -4px 0 0; font-size: 0.85rem; color: var(--muted); }
+.geo-status.ok { color: var(--ok); font-weight: 700; }
+.geo-status a { color: var(--chile); }
+.geo-status button { border: 0; background: none; padding: 0; color: var(--chile); font-weight: 700; text-decoration: underline; }
 .pay-options { display: flex; flex-wrap: wrap; gap: 8px; }
 .pill { display: flex !important; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px; background: var(--papel); border: 2px solid transparent; cursor: pointer; }
 .pill:has(input:checked) { border-color: var(--chile); background: #fff; }
