@@ -90,7 +90,7 @@ En el chat escribes `/` y el atajo (por ejemplo `/menu`) y el texto se pega solo
 📍 *Pollos Asados El Mafer*
 30 Oriente 35, Local A, esq. Callejón del Zapato, Col. Benito Juárez, C.P. 30790
 
-🗺️ https://maps.app.goo.gl/2GhEaUq86rJKFqJD9
+🗺️ https://www.google.com/maps/search/?api=1&query=14.8896096,-92.2692316
 ```
 
 ### `/horario`
