@@ -130,4 +130,16 @@ En cuanto esté listo te avisamos 🍗🔥
 ```
 ¡Gracias por tu compra! 🙌 Que lo disfrutes 🍗
 Te esperamos pronto en *El Mafer* 🔥
+
+Síguenos para promos 👇
+📸 instagram.com/el.mafer
+🎵 tiktok.com/@pollos.asados.el.m
+```
+
+### `/redes`
+```
+¡Síguenos! 🍗🔥
+📸 Instagram: https://www.instagram.com/el.mafer/
+👍 Facebook: https://www.facebook.com/profile.php?id=61592933766319
+🎵 TikTok: https://www.tiktok.com/@pollos.asados.el.m
 ```

@@ -15,6 +15,12 @@ window.MAFER = {
     },
   ],
 
+  redes: [
+    { red: "instagram", nombre: "Instagram", usuario: "@el.mafer", url: "https://www.instagram.com/el.mafer/" },
+    { red: "facebook", nombre: "Facebook", usuario: "El Mafer", url: "https://www.facebook.com/profile.php?id=61592933766319" },
+    { red: "tiktok", nombre: "TikTok", usuario: "@pollos.asados.el.m", url: "https://www.tiktok.com/@pollos.asados.el.m" },
+  ],
+
   categorias: [
     { id: "todos", nombre: "Todo" },
     { id: "pollos", nombre: "🍗 Pollos" },

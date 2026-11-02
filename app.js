@@ -361,6 +361,7 @@
   });
 
   renderStatus();
+  pintarRedes();
   renderChips();
   renderGrid();
   renderBranches();

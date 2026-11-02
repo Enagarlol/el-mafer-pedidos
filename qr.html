@@ -32,6 +32,12 @@
     .url { margin: 12px 0 4px; font-weight: 800; font-size: 1.05rem; word-break: break-all; }
     .tip { margin: 0; color: var(--muted); font-size: 0.9rem; }
     .datos { margin: 16px 0 0; padding-top: 12px; border-top: 2px dashed var(--dorado); font-size: 0.9rem; line-height: 1.5; }
+    .redes { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 14px; margin-top: 10px; }
+    .red { display: inline-flex; align-items: center; gap: 5px; color: var(--brasa); text-decoration: none; font-weight: 700; font-size: 0.85rem; }
+    .red svg { width: 16px; height: 16px; }
+    .red-instagram svg { color: #e4405f; }
+    .red-facebook svg { color: #1877f2; }
+    .red-tiktok svg { color: #000; }
     .acciones { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
     .acciones button, .acciones a {
       font: inherit; font-weight: 800; padding: 12px 18px; border-radius: 999px; border: 0; cursor: pointer;
@@ -57,6 +63,7 @@
       Lun a Sáb · 9:00 a.m. – 5:00 p.m.<br>
       WhatsApp 962 256 0427
     </p>
+    <div class="redes" data-redes="usuario"></div>
   </main>
 
   <div class="acciones">
@@ -66,7 +73,10 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+  <script src="config.js"></script>
+  <script src="redes.js"></script>
   <script>
+    pintarRedes();
     // Siempre apunta a la página publicada, aunque este cartel se abra desde otra dirección
     const URL_PEDIDOS = "https://el-mafer-pedidos.pages.dev";
     document.getElementById("url").textContent = URL_PEDIDOS.replace("https://", "");

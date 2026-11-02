@@ -56,13 +56,20 @@
     <section id="ubicacion" class="location">
       <h2>¿Dónde recoger?</h2>
       <div class="location-wrap">
-        <div class="branches" id="branches"></div>
+        <div class="location-side">
+          <div class="branches" id="branches"></div>
+          <div class="siguenos">
+            <h3>Síguenos</h3>
+            <div class="redes" data-redes="usuario"></div>
+          </div>
+        </div>
         <iframe id="map" title="Mapa de la sucursal" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
     </section>
   </main>
 
   <footer class="footer">
+    <div class="redes redes-iconos" data-redes></div>
     <p>El Mafer · Pollo Asado — hecho con 🔥 y cariño</p>
     <p><a href="qr.html">Compartir con código QR</a></p>
   </footer>
@@ -126,6 +133,7 @@
   </dialog>
 
   <script src="config.js"></script>
+  <script src="redes.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
