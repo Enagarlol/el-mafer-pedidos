@@ -38,6 +38,7 @@ En un momento te atendemos. Mientras, te comparto nuestro menú:
 
 🛵 Domicilio desde $35 · 🏪 o pasa a recoger
 Escríbenos tu pedido, por ejemplo: _"2 bañados BBQ para recoger a las 2"_ 😉
+📲 O pídelo en línea: https://el-mafer-pedidos.pages.dev
 🕘 Lun a Sáb, 9:00 a.m. – 5:00 p.m.
 ```
 
@@ -55,7 +56,7 @@ Ahorita estamos cerrados 😴
 🕘 Abrimos de *lunes a sábado, de 9:00 a.m. a 5:00 p.m.* (domingo descansamos).
 
 Déjanos tu pedido y en cuanto abramos te lo confirmamos 🔥
-Escribe *menú* si quieres ver nuestras opciones.
+📲 Puedes armarlo aquí: https://el-mafer-pedidos.pages.dev
 ```
 
 ---
@@ -80,6 +81,7 @@ En el chat escribes `/` y el atajo (por ejemplo `/menu`) y el texto se pega solo
 • Tortillas: ½ kg $10 · 1 kg $20
 
 ¿Qué te preparamos? 😋
+📲 También puedes pedir aquí: https://el-mafer-pedidos.pages.dev
 ```
 
 ### `/ubicacion`

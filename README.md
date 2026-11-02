@@ -3,6 +3,8 @@
 Página de una sola pantalla para pedir pollo **a domicilio** o **para recoger**.
 El pedido se envía por WhatsApp al negocio: no necesita servidor ni base de datos.
 
+**En línea:** https://el-mafer-pedidos.pages.dev
+
 ## Cómo correrla
 
 ```bash
@@ -19,7 +21,7 @@ Todo vive en [`config.js`](config.js):
 |---|---|
 | `whatsapp` | Número que recibe los pedidos (`52` + 10 dígitos) |
 | `envioDesde` | Costo mínimo de envío (el real se confirma por WhatsApp según la ubicación) |
-| `horario` | Hora de apertura/cierre (muestra "Abierto/Cerrado" y las horas para recoger) |
+| `horario` | Hora de apertura/cierre y días que abre (muestra "Abierto/Cerrado" y las horas para recoger) |
 | `sucursales` | Dirección, teléfono y texto que se busca en Google Maps |
 | `productos` | Menú: precio, qué incluye y salsas opcionales |
 
@@ -34,6 +36,9 @@ Todo vive en [`config.js`](config.js):
 | `--chile` | `#B8321F` | Botones de acción, precios |
 | `--fuego` | `#E8761C` | Botón “+”, acentos |
 
-## Publicar gratis
+## Publicación
 
-Sube el repo a GitHub y activa **GitHub Pages**, o arrastra la carpeta a **Netlify** / **Vercel**.
+Está en **Cloudflare Pages**, conectado a este repositorio: cada push a `main` se publica solo en uno o dos minutos.
+No tiene comando de compilación; el directorio de salida es `/`.
+
+Los textos para los mensajes automáticos de WhatsApp Business están en [`whatsapp-mensajes.md`](whatsapp-mensajes.md).
