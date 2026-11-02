@@ -9,7 +9,7 @@ window.MAFER = {
       id: "matriz",
       nombre: "Pollos Asados El Mafer",
       direccion: "30 Oriente 35, Local A, esq. Callejón del Zapato, Col. Benito Juárez, C.P. 30790",
-      mapa: "30 Oriente 35, Benito Juárez, 30790 Tapachula, Chiapas",
+      mapa: "14.889501,-92.268253", // coordenadas exactas del local (Tapachula, Chis.)
       telefono: "962 256 0427",
       horario: "8:00 a.m. – 6:00 p.m.",
     },

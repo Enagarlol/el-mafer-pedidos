@@ -222,10 +222,15 @@
   function sendOrder(e) {
     e.preventDefault();
     const f = Object.fromEntries(new FormData(e.target));
+    const cambio = e.target.cambio;
+    const pagaConPoco = state.mode === "domicilio" && f.pago === "Efectivo" && f.cambio && +f.cambio < subtotal() + envio();
+    cambio.setCustomValidity(pagaConPoco ? `Debe ser al menos ${money(subtotal() + envio())}` : "");
+    if (!e.target.reportValidity()) return;
     const suc = C.sucursales.find((s) => s.id === f.sucursal);
+    // Sin emojis: WhatsApp los convierte en "�" cuando llegan dentro del enlace
     const lines = [
-      `*Nuevo pedido · El Mafer* 🍗`,
-      `*${state.mode === "domicilio" ? "🛵 A DOMICILIO" : "🏪 PASA A RECOGER"}*`,
+      `*Nuevo pedido · El Mafer*`,
+      `*${state.mode === "domicilio" ? "A DOMICILIO" : "PASA A RECOGER"}*`,
       ``,
       ...state.cart.map((i) => `• ${i.qty}× ${i.nombre}${i.detalle ? ` (${i.detalle})` : ""} — ${money(i.precio * i.qty)}`),
       ``,
@@ -235,12 +240,12 @@
         ? `*Total estimado: ${money(subtotal() + envio())}*`
         : `*Total: ${money(subtotal())}*`,
       ``,
-      `👤 ${f.nombre} · ${f.telefono}`,
+      `*Cliente:* ${f.nombre} · ${f.telefono}`,
       state.mode === "domicilio"
-        ? `📍 ${f.direccion}${f.referencias ? ` (${f.referencias})` : ""}`
-        : `📍 ${suc.nombre} · 🕒 ${f.hora}`,
-      `💰 ${f.pago}${state.mode === "domicilio" && f.pago === "Efectivo" && f.cambio ? ` · paga con ${money(+f.cambio)}` : ""}`,
-      f.notas ? `📝 ${f.notas}` : null,
+        ? `*Dirección:* ${f.direccion}${f.referencias ? ` (${f.referencias})` : ""}`
+        : `*Recoge en:* ${suc.nombre} · *Hora:* ${f.hora}`,
+      `*Pago:* ${f.pago}${state.mode === "domicilio" && f.pago === "Efectivo" && f.cambio ? ` · paga con ${money(+f.cambio)}` : ""}`,
+      f.notas ? `*Notas:* ${f.notas}` : null,
     ].filter((l) => l !== null);
 
     window.open(`https://wa.me/${C.whatsapp}?text=${encodeURIComponent(lines.join("\n"))}`, "_blank");
@@ -281,6 +286,9 @@
   $$("dialog").forEach((d) => d.addEventListener("click", (e) => { if (e.target === d) d.close(); }));
 
   $("#checkout").addEventListener("submit", sendOrder);
+  $("#checkout").addEventListener("input", (e) => {
+    if (e.target.name === "cambio") e.target.setCustomValidity("");
+  });
   $("#checkout").addEventListener("change", (e) => {
     if (e.target.name === "pago") $("#cambio-wrap").hidden = state.mode !== "domicilio" || e.target.value !== "Efectivo";
   });
