@@ -160,6 +160,10 @@ button { font: inherit; cursor: pointer; }
 .option span { flex: 1; font-weight: 700; }
 .option:has(input:checked) { border-color: var(--chile); background: #fff; }
 .option input { accent-color: var(--chile); }
+.size-row { cursor: default; padding: 6px 6px 6px 14px; }
+.size-row b { margin-right: 4px; }
+.size-row.on { border-color: var(--chile); background: #fff; }
+.hint { margin: -4px 0 8px; font-size: 0.85rem; color: var(--muted); }
 
 .qty-row { display: flex; gap: 12px; margin-top: 20px; }
 .qty-row .btn-primary { flex: 1; }

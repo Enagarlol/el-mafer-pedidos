@@ -102,6 +102,15 @@
     const form = $("#product-form");
     const tamanos = Object.entries(p.tamanos);
     const salsas = p.salsas ? Object.entries(p.salsas) : [];
+    // Un contador por tamaño, para pedir "pollo y medio" (1 entero + 1 medio) de una vez
+    const multi = tamanos.length > 1;
+    const cant = Object.fromEntries(tamanos.map(([t], i) => [t, i === 0 ? 1 : 0]));
+    const contador = (t, sm) => `
+      <div class="qty ${sm ? "qty-sm" : ""}">
+        <button type="button" data-size="${t}" data-step="-1" aria-label="Menos ${t}">−</button>
+        <output data-out="${t}">${cant[t]}</output>
+        <button type="button" data-size="${t}" data-step="1" aria-label="Más ${t}">+</button>
+      </div>`;
     form.innerHTML = `
       <div class="sheet-head">
         <h3>${p.emoji} ${p.nombre}</h3>
@@ -109,39 +118,43 @@
       </div>
       <p class="muted">${p.desc}</p>
       ${incluye(p)}
-      ${tamanos.length > 1 ? `<h4>Tamaño</h4>` : ""}
-      <div class="options" ${tamanos.length > 1 ? "" : "hidden"}>
-        ${tamanos.map(([t, pr], i) => `
-          <label class="option"><input type="radio" name="tamano" value="${t}" ${i === 0 ? "checked" : ""}>
-            <span>${t}</span><b>${money(pr)}</b></label>`).join("")}
-      </div>
+      ${multi ? `
+        <h4>${p.cat === "pollos" ? "¿Cuánto pollo?" : "Cantidad"}</h4>
+        ${p.cat === "pollos" ? `<p class="hint">Puedes combinar: 1 entero + 1 medio = pollo y medio.</p>` : ""}
+        <div class="options">
+          ${tamanos.map(([t, pr]) => `
+            <div class="option size-row" data-row="${t}">
+              <span>${t}</span><b>${money(pr)}</b>${contador(t, true)}
+            </div>`).join("")}
+        </div>` : ""}
       ${salsas.length ? `<h4>Salsa</h4><div class="options">
         ${salsas.map(([s, pr], i) => `
           <label class="option"><input type="radio" name="salsa" value="${s}" ${i === 0 ? "checked" : ""}>
             <span>${s}</span><b>${pr ? "+" + money(pr) : ""}</b></label>`).join("")}
       </div>` : ""}
       <div class="qty-row">
-        <div class="qty">
-          <button type="button" data-step="-1" aria-label="Menos">−</button>
-          <output name="qty">1</output>
-          <button type="button" data-step="1" aria-label="Más">+</button>
-        </div>
+        ${multi ? "" : contador(tamanos[0][0])}
         <button class="btn-primary" value="add" id="add-btn">Agregar</button>
       </div>`;
 
     const calc = () => {
-      const fd = new FormData(form);
-      const base = p.tamanos[fd.get("tamano")];
-      const extra = p.salsas ? p.salsas[fd.get("salsa")] : 0;
-      const qty = +form.qty.value;
-      $("#add-btn").textContent = `Agregar · ${money((base + extra) * qty)}`;
-      return { base: base + extra, qty, tamano: fd.get("tamano"), salsa: fd.get("salsa") };
+      const salsa = new FormData(form).get("salsa");
+      const extra = p.salsas ? p.salsas[salsa] : 0;
+      const items = Object.entries(cant).filter(([, q]) => q > 0);
+      const total = items.reduce((s, [t, q]) => s + (p.tamanos[t] + extra) * q, 0);
+      $$("[data-row]", form).forEach((r) => r.classList.toggle("on", cant[r.dataset.row] > 0));
+      const btn = $("#add-btn");
+      btn.disabled = !items.length;
+      btn.textContent = items.length ? `Agregar · ${money(total)}` : "Elige una cantidad";
+      return { extra, items, salsa };
     };
     form.onchange = calc;
     form.onclick = (e) => {
-      const step = e.target.dataset.step;
-      if (!step) return;
-      form.qty.value = Math.max(1, Math.min(20, +form.qty.value + +step));
+      const b = e.target.closest("[data-step]");
+      if (!b) return;
+      const t = b.dataset.size;
+      cant[t] = Math.max(multi ? 0 : 1, Math.min(20, cant[t] + +b.dataset.step));
+      $(`[data-out="${t}"]`, form).textContent = cant[t];
       calc();
     };
     calc();
@@ -149,14 +162,16 @@
     form.onsubmit = (e) => {
       if (e.submitter?.value !== "add") return;
       const o = calc();
-      const key = [p.id, o.tamano, o.salsa].join("|");
-      const line = state.cart.find((i) => i.key === key);
-      if (line) line.qty += o.qty;
-      else state.cart.push({
-        key, id: p.id, emoji: p.emoji, nombre: p.nombre,
-        detalle: [Object.keys(p.tamanos).length > 1 ? o.tamano : "", o.salsa || ""].filter(Boolean).join(" · "),
-        precio: o.base, qty: o.qty,
-      });
+      for (const [t, q] of o.items) {
+        const key = [p.id, t, o.salsa].join("|");
+        const line = state.cart.find((i) => i.key === key);
+        if (line) line.qty += q;
+        else state.cart.push({
+          key, id: p.id, emoji: p.emoji, nombre: p.nombre,
+          detalle: [multi ? t : "", o.salsa || ""].filter(Boolean).join(" · "),
+          precio: p.tamanos[t] + o.extra, qty: q,
+        });
+      }
       store.save();
       renderCart();
       bump();
