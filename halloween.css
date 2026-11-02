@@ -1,0 +1,73 @@
+/* Decoraciones de Halloween: solo aplican cuando halloween.js pone la clase .t-halloween */
+.t-halloween {
+  --embrujo: #5b2a86;   /* morado */
+  --calabaza: #f07c1a;  /* naranja calabaza */
+}
+
+/* Barra superior con borde naranja → morado */
+.t-halloween .topbar { border-bottom: 4px solid; border-image: linear-gradient(90deg, var(--calabaza), var(--embrujo), var(--calabaza)) 1; }
+
+/* Aviso de temporada */
+.hw-banner {
+  margin: 12px auto 0; width: min(1100px, calc(100% - 32px)); padding: 10px 16px;
+  border-radius: 999px; text-align: center; font-size: 0.95rem; color: #fff;
+  background: linear-gradient(90deg, var(--embrujo), #7a3cb0 50%, var(--embrujo));
+  box-shadow: 0 6px 18px rgb(91 42 134 / 0.3);
+}
+.hw-banner b { color: var(--dorado); }
+
+/* Hero: telaraña, araña colgando y murciélagos */
+.t-halloween .hero { position: relative; overflow: hidden; }
+.hw-deco { position: absolute; inset: 0; pointer-events: none; }
+.hw-web { position: absolute; top: 0; right: 0; width: 170px; height: 170px; }
+.hw-web path { fill: none; stroke: var(--muted); stroke-width: 1.2; opacity: 0.45; }
+
+.hw-spider { position: absolute; top: 0; right: 150px; width: 2px; height: 90px; background: var(--muted); opacity: 0.8; transform-origin: top; animation: hw-colgar 4s ease-in-out infinite; }
+.hw-spider span { position: absolute; bottom: -18px; left: -12px; font-size: 1.5rem; }
+
+.hw-bat { position: absolute; left: 0; font-size: 1.6rem; opacity: 0.85; animation: hw-volar 16s linear infinite; }
+.hw-bat.b1 { top: 18%; }
+.hw-bat.b2 { top: 8%; font-size: 1.2rem; animation-duration: 21s; animation-delay: -7s; }
+.hw-bat.b3 { top: 55%; font-size: 1.1rem; animation-duration: 25s; animation-delay: -15s; }
+
+/* Títulos con su calabaza / fantasma */
+.t-halloween #menu h2::after { content: " 🎃"; }
+.t-halloween #ubicacion h2::after { content: " 👻"; }
+
+/* Tarjetas con brillo de calabaza al pasar el dedo / mouse */
+.t-halloween .card:hover { box-shadow: 0 8px 24px rgb(240 124 26 / 0.35); }
+.t-halloween .tag { background: var(--embrujo); }
+
+/* Calabacita sobre el botón del carrito */
+.t-halloween .cart-fab::after {
+  content: "🎃"; position: absolute; top: -16px; right: 22px; font-size: 1.4rem;
+  animation: hw-flotar 2.4s ease-in-out infinite;
+}
+
+/* Pie con neblina morada y calabazas */
+.t-halloween .footer { background: linear-gradient(to bottom, transparent, rgb(91 42 134 / 0.14)); }
+.hw-calabazas { display: flex; justify-content: center; gap: 14px; font-size: 1.6rem; margin-bottom: 12px; }
+.hw-calabazas span { animation: hw-flotar 3s ease-in-out infinite; }
+.hw-calabazas span:nth-child(2n) { animation-delay: -1.5s; }
+
+@keyframes hw-colgar { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.6); } }
+@keyframes hw-flotar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes hw-volar {
+  0%   { transform: translate(-60px, 0) rotate(-8deg); }
+  25%  { transform: translate(25vw, -24px) rotate(6deg); }
+  50%  { transform: translate(50vw, 10px) rotate(-6deg); }
+  75%  { transform: translate(75vw, -18px) rotate(8deg); }
+  100% { transform: translate(105vw, 0) rotate(-4deg); }
+}
+
+@media (max-width: 760px) {
+  .hw-web { width: 110px; height: 110px; }
+  .hw-spider { right: 90px; height: 60px; }
+  .hw-banner { border-radius: 16px; font-size: 0.85rem; }
+}
+
+/* Sin animaciones para quien las tiene desactivadas en su celular */
+@media (prefers-reduced-motion: reduce) {
+  .hw-bat, .hw-spider, .hw-calabazas span, .t-halloween .cart-fab::after { animation: none; }
+  .hw-bat { display: none; }
+}

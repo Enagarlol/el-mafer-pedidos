@@ -1,7 +1,8 @@
 // Todo lo que el negocio necesita cambiar vive aquí: menú, precios, sucursal y WhatsApp.
 window.MAFER = {
   whatsapp: "529622560427", // 52 + 10 dígitos, sin espacios
-  envioDesde: 35, // el costo real depende de la ubicación y se confirma por WhatsApp
+  envioDesde: 35,
+  temporada: "halloween", // decoraciones de temporada; déjalo en "" para quitarlas // el costo real depende de la ubicación y se confirma por WhatsApp
   horario: { abre: 9, cierra: 17, dias: [1, 2, 3, 4, 5, 6] }, // 24 h · días: 0 = domingo … 6 = sábado
 
   sucursales: [
