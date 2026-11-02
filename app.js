@@ -198,11 +198,21 @@
 
   function renderHours() {
     const now = new Date();
-    const opts = ["Lo antes posible (~20 min)"];
     const t = new Date(now);
     t.setMinutes(Math.ceil((t.getMinutes() + 30) / 15) * 15, 0, 0);
+    // Si ya cerramos, se ofrecen horas de mañana
+    const manana = t.getHours() >= C.horario.cierra || t.getDate() !== now.getDate();
+    if (manana) {
+      t.setDate(now.getDate() + 1);
+      t.setHours(C.horario.abre, 0, 0, 0);
+    }
+    const abierto = !manana && now.getHours() >= C.horario.abre;
+    const opts = abierto ? ["Lo antes posible (~20 min)"] : [];
     while (t.getHours() < C.horario.cierra && opts.length < 16) {
-      if (t.getHours() >= C.horario.abre) opts.push(t.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }));
+      if (t.getHours() >= C.horario.abre) {
+        const hora = t.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
+        opts.push(manana ? `Mañana ${hora}` : hora);
+      }
       t.setMinutes(t.getMinutes() + 15);
     }
     $("#hora-select").innerHTML = opts.map((o) => `<option>${o}</option>`).join("");

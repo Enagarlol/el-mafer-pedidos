@@ -2,7 +2,7 @@
 window.MAFER = {
   whatsapp: "529622560427", // 52 + 10 dígitos, sin espacios
   envioDesde: 35, // el costo real depende de la ubicación y se confirma por WhatsApp
-  horario: { abre: 11, cierra: 21 }, // 24 h — PENDIENTE confirmar el horario real
+  horario: { abre: 8, cierra: 18 }, // 24 h
 
   sucursales: [
     {
@@ -11,7 +11,7 @@ window.MAFER = {
       direccion: "30 Oriente 35, Local A, esq. Callejón del Zapato, Col. Benito Juárez, C.P. 30790",
       mapa: "30 Oriente 35, Benito Juárez, 30790 Tapachula, Chiapas",
       telefono: "962 256 0427",
-      horario: "Lun a Dom · 11:00 – 21:00",
+      horario: "8:00 a.m. – 6:00 p.m.",
     },
   ],
 
