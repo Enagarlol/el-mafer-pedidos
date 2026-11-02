@@ -219,6 +219,62 @@
   }
 
   // ---------- Enviar pedido por WhatsApp ----------
+  // Sin emojis ni símbolos (🍗 ✅ ☎ ⏰…): dentro del enlace WhatsApp los convierte en "�". Acentos, · × y » sí llegan bien.
+  // El ticket va entre ``` para que WhatsApp lo muestre en letra de ancho fijo y los precios queden alineados.
+  const ANCHO = 30;
+  const fila = (izq, der) => {
+    const max = ANCHO - der.length - 1;
+    if (izq.length > max) izq = izq.slice(0, max - 1) + "…";
+    return izq + " ".repeat(ANCHO - izq.length - der.length) + der;
+  };
+
+  function buildMessage(f) {
+    const domicilio = state.mode === "domicilio";
+    const total = subtotal() + envio();
+    const folio = Date.now().toString(36).slice(-4).toUpperCase();
+    const suc = C.sucursales.find((s) => s.id === f.sucursal);
+    const cambio = domicilio && f.pago === "Efectivo" && f.cambio ? +f.cambio : 0;
+
+    const ticket = [
+      ...state.cart.flatMap((i) => [
+        fila(`${i.qty}× ${i.nombre}`, money(i.precio * i.qty)),
+        i.detalle ? `   ${i.detalle}` : null,
+      ]),
+      "-".repeat(ANCHO),
+      domicilio ? fila("Subtotal", money(subtotal())) : null,
+      domicilio ? fila("Envío (desde)", money(C.envioDesde)) : null,
+      fila(domicilio ? "TOTAL ESTIMADO" : "TOTAL", money(total)),
+    ];
+
+    return [
+      `*EL MAFER · POLLO ASADO*`,
+      `*Nuevo pedido #${folio}*`,
+      domicilio ? `» *A DOMICILIO*` : `» *PASA A RECOGER*`,
+      ``,
+      "```",
+      ...ticket,
+      "```",
+      domicilio ? `_El envío se confirma según la ubicación._` : null,
+      ``,
+      `*CLIENTE*`,
+      `${f.nombre}`,
+      `Tel. ${f.telefono}`,
+      ``,
+      domicilio ? `*ENTREGA*` : `*RECOGE*`,
+      ...(domicilio
+        ? [`${f.direccion}`, f.referencias ? `_Ref: ${f.referencias}_` : null]
+        : [`${suc.nombre}`, `Hora: *${f.hora}*`]),
+      ``,
+      `*PAGO*`,
+      cambio
+        ? `${f.pago} · paga con ${money(cambio)} · cambio ${money(cambio - total)}`
+        : f.pago,
+      ...(f.notas ? [``, `*NOTAS*`, `_${f.notas}_`] : []),
+    ]
+      .filter((l) => l !== null)
+      .join("\n");
+  }
+
   function sendOrder(e) {
     e.preventDefault();
     const f = Object.fromEntries(new FormData(e.target));
@@ -226,29 +282,7 @@
     const pagaConPoco = state.mode === "domicilio" && f.pago === "Efectivo" && f.cambio && +f.cambio < subtotal() + envio();
     cambio.setCustomValidity(pagaConPoco ? `Debe ser al menos ${money(subtotal() + envio())}` : "");
     if (!e.target.reportValidity()) return;
-    const suc = C.sucursales.find((s) => s.id === f.sucursal);
-    // Sin emojis: WhatsApp los convierte en "�" cuando llegan dentro del enlace
-    const lines = [
-      `*Nuevo pedido · El Mafer*`,
-      `*${state.mode === "domicilio" ? "A DOMICILIO" : "PASA A RECOGER"}*`,
-      ``,
-      ...state.cart.map((i) => `• ${i.qty}× ${i.nombre}${i.detalle ? ` (${i.detalle})` : ""} — ${money(i.precio * i.qty)}`),
-      ``,
-      `Subtotal: ${money(subtotal())}`,
-      state.mode === "domicilio" ? `Envío: desde ${money(C.envioDesde)} (por confirmar según ubicación)` : null,
-      state.mode === "domicilio"
-        ? `*Total estimado: ${money(subtotal() + envio())}*`
-        : `*Total: ${money(subtotal())}*`,
-      ``,
-      `*Cliente:* ${f.nombre} · ${f.telefono}`,
-      state.mode === "domicilio"
-        ? `*Dirección:* ${f.direccion}${f.referencias ? ` (${f.referencias})` : ""}`
-        : `*Recoge en:* ${suc.nombre} · *Hora:* ${f.hora}`,
-      `*Pago:* ${f.pago}${state.mode === "domicilio" && f.pago === "Efectivo" && f.cambio ? ` · paga con ${money(+f.cambio)}` : ""}`,
-      f.notas ? `*Notas:* ${f.notas}` : null,
-    ].filter((l) => l !== null);
-
-    window.open(`https://wa.me/${C.whatsapp}?text=${encodeURIComponent(lines.join("\n"))}`, "_blank");
+    window.open(`https://wa.me/${C.whatsapp}?text=${encodeURIComponent(buildMessage(f))}`, "_blank");
     state.cart = [];
     store.save();
     renderCart();
