@@ -24,14 +24,37 @@
   const incluye = (p) => (p.incluye ? `<p class="incluye"><b>Incluye:</b> ${p.incluye.join(", ")}</p>` : "");
 
   // ---------- Abierto / cerrado ----------
+  const H = C.horario;
+  const DIAS = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+  const hora12 = (h) => `${h % 12 || 12}:00 ${h < 12 ? "a.m." : "p.m."}`;
+  const abiertoEn = (d) => H.dias.includes(d.getDay()) && d.getHours() >= H.abre && d.getHours() < H.cierra;
+  const mismoDia = (a, b) => a.toDateString() === b.toDateString();
+
+  // Primer momento en que abrimos a partir de `desde` (hoy si aún no abrimos, si no el siguiente día laboral)
+  function proximaApertura(desde) {
+    const t = new Date(desde);
+    if (!(H.dias.includes(t.getDay()) && t.getHours() < H.abre)) {
+      do t.setDate(t.getDate() + 1); while (!H.dias.includes(t.getDay()));
+    }
+    t.setHours(H.abre, 0, 0, 0);
+    return t;
+  }
+
+  function diaRelativo(t, now) {
+    if (mismoDia(t, now)) return "hoy";
+    const manana = new Date(now);
+    manana.setDate(now.getDate() + 1);
+    return mismoDia(t, manana) ? "mañana" : `el ${DIAS[t.getDay()]}`;
+  }
+
   function renderStatus() {
-    const h = new Date().getHours();
-    const open = h >= C.horario.abre && h < C.horario.cierra;
+    const now = new Date();
+    const open = abiertoEn(now);
     const el = $("#status");
     el.className = "status " + (open ? "is-open" : "is-closed");
     el.textContent = open
-      ? `Abierto ahora · cerramos a las ${C.horario.cierra}:00`
-      : `Cerrado · abrimos a las ${C.horario.abre}:00 (puedes programar tu pedido)`;
+      ? `Abierto ahora · cerramos a las ${hora12(H.cierra)}`
+      : `Cerrado · abrimos ${diaRelativo(proximaApertura(now), now)} a las ${hora12(H.abre)} (puedes programar tu pedido)`;
   }
 
   // ---------- Modo de entrega ----------
@@ -200,19 +223,14 @@
     const now = new Date();
     const t = new Date(now);
     t.setMinutes(Math.ceil((t.getMinutes() + 30) / 15) * 15, 0, 0);
-    // Si ya cerramos, se ofrecen horas de mañana
-    const manana = t.getHours() >= C.horario.cierra || t.getDate() !== now.getDate();
-    if (manana) {
-      t.setDate(now.getDate() + 1);
-      t.setHours(C.horario.abre, 0, 0, 0);
-    }
-    const abierto = !manana && now.getHours() >= C.horario.abre;
-    const opts = abierto ? ["Lo antes posible (~20 min)"] : [];
-    while (t.getHours() < C.horario.cierra && opts.length < 16) {
-      if (t.getHours() >= C.horario.abre) {
-        const hora = t.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
-        opts.push(manana ? `Mañana ${hora}` : hora);
-      }
+    // Si ya cerramos (o es domingo), se ofrecen horas del siguiente día que abrimos
+    if (!abiertoEn(t)) t.setTime(proximaApertura(t).getTime());
+    const dia = diaRelativo(t, now);
+    const prefijo = dia === "hoy" ? "" : dia.replace(/^el /, "").replace(/^./, (c) => c.toUpperCase()) + " ";
+    const listoEn20 = new Date(now.getTime() + 20 * 60000);
+    const opts = abiertoEn(now) && abiertoEn(listoEn20) ? ["Lo antes posible (~20 min)"] : [];
+    while (t.getHours() < H.cierra) {
+      opts.push(prefijo + t.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }));
       t.setMinutes(t.getMinutes() + 15);
     }
     $("#hora-select").innerHTML = opts.map((o) => `<option>${o}</option>`).join("");

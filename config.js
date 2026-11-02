@@ -2,7 +2,7 @@
 window.MAFER = {
   whatsapp: "529622560427", // 52 + 10 dígitos, sin espacios
   envioDesde: 35, // el costo real depende de la ubicación y se confirma por WhatsApp
-  horario: { abre: 8, cierra: 18 }, // 24 h
+  horario: { abre: 9, cierra: 17, dias: [1, 2, 3, 4, 5, 6] }, // 24 h · días: 0 = domingo … 6 = sábado
 
   sucursales: [
     {
@@ -11,7 +11,7 @@ window.MAFER = {
       direccion: "30 Oriente 35, Local A, esq. Callejón del Zapato, Col. Benito Juárez, C.P. 30790",
       mapa: "14.889501,-92.268253", // coordenadas exactas del local (Tapachula, Chis.)
       telefono: "962 256 0427",
-      horario: "8:00 a.m. – 6:00 p.m.",
+      horario: "Lun a Sáb · 9:00 a.m. – 5:00 p.m. · Domingo cerrado",
     },
   ],
 
