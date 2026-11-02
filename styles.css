@@ -121,6 +121,7 @@ button { font: inherit; cursor: pointer; }
 #map { width: 100%; min-height: 340px; border: 0; border-radius: var(--radius); box-shadow: var(--shadow); background: var(--papel); }
 
 .footer { text-align: center; padding: 32px 16px 110px; color: var(--muted); }
+.footer a { color: var(--chile); font-weight: 800; }
 
 /* ---------- Botón flotante ---------- */
 .cart-fab {

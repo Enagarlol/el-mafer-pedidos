@@ -34,7 +34,7 @@ En un momento te atendemos. Mientras, te comparto nuestro menú:
 2️⃣ *Asado bañado* (mango habanero, BBQ o búfalo) — ensalada de col, frijol y ranch
 3️⃣ *Campero* — frijol, ensalada de col y salsa · bañado +$15
 
-*EXTRAS:* complementos $10 · tortillas ½ kg $10, 1 kg $20
+*EXTRAS:* complementos $10 · salsas (ranch, BBQ, mango habanero, búfalo) $15 · tortillas ½ kg $10, 1 kg $20
 
 🛵 Domicilio desde $35 · 🏪 o pasa a recoger
 Escríbenos tu pedido, por ejemplo: _"1 medio bañado BBQ para recoger a las 2"_ 😉
@@ -78,6 +78,7 @@ En el chat escribes `/` y el atajo (por ejemplo `/menu`) y el texto se pega solo
 
 *EXTRAS*
 • Complementos extra: $10
+• Salsa extra (ranch, BBQ, mango habanero o búfalo): $15
 • Tortillas: ½ kg $10 · 1 kg $20
 
 ¿Qué te preparamos? 😋

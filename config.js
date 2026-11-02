@@ -50,7 +50,11 @@ window.MAFER = {
     { id: "x-salsa", cat: "extras", emoji: "🌶️", nombre: "Salsa roja extra", desc: "Porción extra.", tamanos: { "Porción": 10 } },
     { id: "x-cebolla", cat: "extras", emoji: "🧅", nombre: "Cebolla asada extra", desc: "Porción extra.", tamanos: { "Porción": 10 } },
     { id: "x-chiles", cat: "extras", emoji: "🫑", nombre: "Chiles asados extra", desc: "Porción extra.", tamanos: { "Porción": 10 } },
-    { id: "x-ranch", cat: "extras", emoji: "🥛", nombre: "Ranch extra", desc: "Porción extra.", tamanos: { "Porción": 10 } },
+    {
+      id: "x-salsas", cat: "extras", emoji: "🥫", nombre: "Salsa extra",
+      desc: "Porción extra de la salsa que elijas.", tamanos: { "Porción": 15 },
+      salsas: { "Ranch": 0, "BBQ": 0, "Mango habanero": 0, "Búfalo": 0 },
+    },
     {
       id: "tortillas", cat: "extras", emoji: "🫓", nombre: "Tortillas",
       desc: "De maíz.", tamanos: { "Medio kilo": 10, "Kilo": 20 },

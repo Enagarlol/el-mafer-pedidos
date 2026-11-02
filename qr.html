@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>El Mafer · QR para pedir</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="assets/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brasa: #3a1e12; --crema: #fbf3e6; --dorado: #f2b33d;
+      --chile: #b8321f; --fuego: #e8761c; --muted: #7a5a48;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 24px 16px; min-height: 100vh;
+      font-family: "Nunito", system-ui, sans-serif; color: var(--brasa); background: var(--crema);
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
+    }
+    .cartel {
+      width: min(100%, 420px); padding: 28px 24px; text-align: center;
+      background: #fff; border-radius: 24px; border: 6px solid var(--brasa);
+      box-shadow: 0 0 0 4px var(--dorado), 0 10px 30px rgb(58 30 18 / 0.15);
+    }
+    .cartel img.logo { width: 150px; height: 150px; object-fit: cover; border-radius: 50%; }
+    h1 { font-family: "Bowlby One", sans-serif; font-weight: 400; font-size: 2rem; line-height: 1.05; margin: 8px 0 4px; }
+    .sub { margin: 0 0 16px; font-weight: 700; color: var(--chile); }
+    canvas { width: 100%; max-width: 300px; height: auto; display: block; margin: 0 auto; }
+    .url { margin: 12px 0 4px; font-weight: 800; font-size: 1.05rem; word-break: break-all; }
+    .tip { margin: 0; color: var(--muted); font-size: 0.9rem; }
+    .datos { margin: 16px 0 0; padding-top: 12px; border-top: 2px dashed var(--dorado); font-size: 0.9rem; line-height: 1.5; }
+    .acciones { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .acciones button, .acciones a {
+      font: inherit; font-weight: 800; padding: 12px 18px; border-radius: 999px; border: 0; cursor: pointer;
+      background: var(--chile); color: #fff; text-decoration: none;
+    }
+    .acciones .sec { background: transparent; color: var(--brasa); border: 2px solid var(--brasa); }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .acciones { display: none; }
+      .cartel { box-shadow: none; width: 100%; max-width: 13cm; margin: 1cm auto; }
+    }
+  </style>
+</head>
+<body>
+  <main class="cartel">
+    <img class="logo" src="assets/logo.jpg" alt="El Mafer Pollo Asado">
+    <h1>Pide tu pollo aquí</h1>
+    <p class="sub">A domicilio o para recoger</p>
+    <canvas id="qr" width="1024" height="1024" aria-label="Código QR para pedir en línea"></canvas>
+    <p class="url" id="url"></p>
+    <p class="tip">Escanea con la cámara de tu celular</p>
+    <p class="datos">
+      Lun a Sáb · 9:00 a.m. – 5:00 p.m.<br>
+      WhatsApp 962 256 0427
+    </p>
+  </main>
+
+  <div class="acciones">
+    <button id="imprimir">Imprimir cartel</button>
+    <button id="descargar" class="sec">Descargar QR (imagen)</button>
+    <a href="./" class="sec">Ir a la página</a>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+  <script>
+    // Siempre apunta a la página publicada, aunque este cartel se abra desde otra dirección
+    const URL_PEDIDOS = "https://el-mafer-pedidos.pages.dev";
+    document.getElementById("url").textContent = URL_PEDIDOS.replace("https://", "");
+
+    // Corrección de errores "H" (30%): permite tapar el centro con el logo y que el QR siga leyéndose
+    const qr = qrcode(0, "H");
+    qr.addData(URL_PEDIDOS);
+    qr.make();
+
+    const canvas = document.getElementById("qr");
+    const ctx = canvas.getContext("2d");
+    const n = qr.getModuleCount();
+    const margen = 4; // zona blanca alrededor que piden los lectores de QR
+    // Cada cuadrito mide un número exacto de pixeles: así los lectores lo leen a cualquier tamaño
+    const celda = Math.floor(1024 / (n + margen * 2));
+    canvas.width = canvas.height = celda * (n + margen * 2);
+
+    function dibujar(logo) {
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#3a1e12";
+      for (let r = 0; r < n; r++)
+        for (let c = 0; c < n; c++)
+          if (qr.isDark(r, c))
+            ctx.fillRect((c + margen) * celda, (r + margen) * celda, celda, celda);
+      if (!logo) return;
+      const lado = canvas.width * 0.22;
+      const x = (canvas.width - lado) / 2;
+      ctx.fillStyle = "#fff";
+      ctx.beginPath();
+      ctx.arc(canvas.width / 2, canvas.height / 2, lado / 2 + celda, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(canvas.width / 2, canvas.height / 2, lado / 2, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(logo, x, x, lado, lado);
+      ctx.restore();
+    }
+
+    dibujar();
+    const logo = new Image();
+    logo.onload = () => dibujar(logo);
+    logo.src = "assets/logo.jpg";
+
+    document.getElementById("imprimir").onclick = () => window.print();
+    document.getElementById("descargar").onclick = () => {
+      const a = document.createElement("a");
+      a.href = canvas.toDataURL("image/png");
+      a.download = "qr-el-mafer.png";
+      a.click();
+    };
+  </script>
+</body>
+</html>
