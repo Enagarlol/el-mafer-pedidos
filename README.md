@@ -17,11 +17,11 @@ Todo vive en [`config.js`](config.js):
 
 | Campo | Para qué |
 |---|---|
-| `whatsapp` | Número que recibe los pedidos (`52` + `1` + 10 dígitos) |
-| `envio`, `pedidoMinimoDomicilio` | Costo de envío y mínimo para domicilio |
+| `whatsapp` | Número que recibe los pedidos (`52` + 10 dígitos) |
+| `envioDesde` | Costo mínimo de envío (el real se confirma por WhatsApp según la ubicación) |
 | `horario` | Hora de apertura/cierre (muestra "Abierto/Cerrado" y las horas para recoger) |
 | `sucursales` | Dirección, teléfono y texto que se busca en Google Maps |
-| `productos` | Menú: tamaños con precio y salsas opcionales |
+| `productos` | Menú: precio, qué incluye y salsas opcionales |
 
 ## Paleta
 

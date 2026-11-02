@@ -7,8 +7,8 @@
 
   // ---------- Estado (se guarda en el navegador para no perder el carrito) ----------
   const store = {
-    load() { try { return JSON.parse(localStorage.getItem("mafer") || "{}"); } catch { return {}; } },
-    save() { try { localStorage.setItem("mafer", JSON.stringify({ mode: state.mode, cart: state.cart })); } catch {} },
+    load() { try { return JSON.parse(localStorage.getItem("mafer-v2") || "{}"); } catch { return {}; } },
+    save() { try { localStorage.setItem("mafer-v2", JSON.stringify({ mode: state.mode, cart: state.cart })); } catch {} },
   };
   const saved = store.load();
   const state = {
@@ -19,7 +19,9 @@
   };
 
   const subtotal = () => state.cart.reduce((s, i) => s + i.precio * i.qty, 0);
-  const envio = () => (state.mode === "domicilio" && state.cart.length ? C.envio : 0);
+  // El envío depende de la ubicación: aquí solo se suma el mínimo y el negocio lo confirma por WhatsApp
+  const envio = () => (state.mode === "domicilio" && state.cart.length ? C.envioDesde : 0);
+  const incluye = (p) => (p.incluye ? `<p class="incluye"><b>Incluye:</b> ${p.incluye.join(", ")}</p>` : "");
 
   // ---------- Abierto / cerrado ----------
   function renderStatus() {
@@ -53,15 +55,17 @@
     const items = C.productos.filter((p) => state.cat === "todos" || p.cat === state.cat);
     $("#grid").innerHTML = items
       .map((p) => {
-        const desde = Math.min(...Object.values(p.tamanos));
+        const precios = Object.values(p.tamanos);
+        const desde = Math.min(...precios);
         return `
         <article class="card" data-id="${p.id}">
           ${p.tag ? `<span class="tag">${p.tag}</span>` : ""}
           <div class="card-emoji" aria-hidden="true">${p.emoji}</div>
           <h3>${p.nombre}</h3>
           <p>${p.desc}</p>
+          ${incluye(p)}
           <div class="card-foot">
-            <span class="price"><small>desde</small> ${money(desde)}</span>
+            <span class="price">${precios.length > 1 ? "<small>desde</small> " : ""}${money(desde)}</span>
             <button class="btn-add" data-open="${p.id}" aria-label="Agregar ${p.nombre}">+</button>
           </div>
         </article>`;
@@ -81,6 +85,7 @@
         <button class="icon-btn" value="cancel" aria-label="Cerrar">✕</button>
       </div>
       <p class="muted">${p.desc}</p>
+      ${incluye(p)}
       ${tamanos.length > 1 ? `<h4>Tamaño</h4>` : ""}
       <div class="options" ${tamanos.length > 1 ? "" : "hidden"}>
         ${tamanos.map(([t, pr], i) => `
@@ -143,7 +148,7 @@
     $("#cart-fab").hidden = count === 0;
     $("#cart-count").textContent = count;
     $("#cart-fab-total").textContent = money(total);
-    $("#envio-label").textContent = `Envío ${money(C.envio)} · mín. ${money(C.pedidoMinimoDomicilio)}`;
+    $("#envio-label").textContent = `Envío desde ${money(C.envioDesde)}`;
 
     $("#cart-list").innerHTML = state.cart.length
       ? state.cart.map((i, idx) => `
@@ -159,15 +164,13 @@
         </li>`).join("")
       : `<li class="empty">Tu pedido está vacío. ¡Agrega un pollo! 🍗</li>`;
 
-    const falta = C.pedidoMinimoDomicilio - subtotal();
+    const domicilio = state.mode === "domicilio";
     $("#totals").innerHTML = `
       <div><span>Subtotal</span><span>${money(subtotal())}</span></div>
-      ${state.mode === "domicilio" ? `<div><span>Envío</span><span>${money(envio())}</span></div>` : ""}
-      <div class="grand"><span>Total</span><span>${money(total)}</span></div>
-      ${state.mode === "domicilio" && falta > 0 && state.cart.length
-        ? `<p class="warn">Te faltan ${money(falta)} para el pedido mínimo a domicilio.</p>` : ""}`;
-    $("#checkout [type=submit]").disabled =
-      !state.cart.length || (state.mode === "domicilio" && falta > 0);
+      ${domicilio ? `<div><span>Envío</span><span>desde ${money(C.envioDesde)}</span></div>` : ""}
+      <div class="grand"><span>${domicilio ? "Total estimado" : "Total"}</span><span>${money(total)}</span></div>
+      ${domicilio ? `<p class="note">El envío depende de tu ubicación; te confirmamos el total por WhatsApp.</p>` : ""}`;
+    $("#checkout [type=submit]").disabled = !state.cart.length;
   }
 
   function bump() {
@@ -217,8 +220,10 @@
       ...state.cart.map((i) => `• ${i.qty}× ${i.nombre}${i.detalle ? ` (${i.detalle})` : ""} — ${money(i.precio * i.qty)}`),
       ``,
       `Subtotal: ${money(subtotal())}`,
-      state.mode === "domicilio" ? `Envío: ${money(envio())}` : null,
-      `*Total: ${money(subtotal() + envio())}*`,
+      state.mode === "domicilio" ? `Envío: desde ${money(C.envioDesde)} (por confirmar según ubicación)` : null,
+      state.mode === "domicilio"
+        ? `*Total estimado: ${money(subtotal() + envio())}*`
+        : `*Total: ${money(subtotal())}*`,
       ``,
       `👤 ${f.nombre} · ${f.telefono}`,
       state.mode === "domicilio"

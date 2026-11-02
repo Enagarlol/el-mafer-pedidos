@@ -200,7 +200,10 @@ button { font: inherit; cursor: pointer; }
 .totals { margin-top: 16px; padding-top: 12px; border-top: 2px dashed #e2cdb5; display: grid; gap: 4px; }
 .totals div { display: flex; justify-content: space-between; }
 .totals .grand { font-weight: 800; font-size: 1.25rem; color: var(--brasa); }
-.warn { margin: 6px 0 0; color: var(--chile); font-weight: 700; font-size: 0.9rem; }
+.note { margin: 6px 0 0; color: var(--muted); font-size: 0.85rem; }
+.incluye { margin: 4px 0 0; font-size: 0.85rem; color: var(--cacao); flex: none; }
+.incluye b { color: var(--chile); }
+.card .incluye { flex: none; }
 
 @keyframes pop { from { opacity: 0; transform: scale(0.96); } }
 @keyframes bump { 50% { transform: translateX(-50%) scale(1.06); } }
