@@ -29,7 +29,7 @@ Se manda solo la primera vez que alguien escribe, o cuando lleva 14 días sin es
 ¡Hola! 👋 Gracias por escribir a *Pollos Asados El Mafer* 🍗🔥
 En un momento te atendemos. Mientras, te comparto nuestro menú:
 
-*POLLOS ENTEROS — $200*
+*POLLOS* — Entero $200 · Medio $100 · Cuarto $55
 1️⃣ *Asado natural* — frijol, ensalada de col, salsa roja, cebolla y chiles asados
 2️⃣ *Asado bañado* (mango habanero, BBQ o búfalo) — ensalada de col, frijol y ranch
 3️⃣ *Campero* — frijol, ensalada de col y salsa · bañado +$15
@@ -37,7 +37,7 @@ En un momento te atendemos. Mientras, te comparto nuestro menú:
 *EXTRAS:* complementos $10 · tortillas ½ kg $10, 1 kg $20
 
 🛵 Domicilio desde $35 · 🏪 o pasa a recoger
-Escríbenos tu pedido, por ejemplo: _"2 bañados BBQ para recoger a las 2"_ 😉
+Escríbenos tu pedido, por ejemplo: _"1 medio bañado BBQ para recoger a las 2"_ 😉
 📲 O pídelo en línea: https://el-mafer-pedidos.pages.dev
 🕘 Lun a Sáb, 9:00 a.m. – 5:00 p.m.
 ```
@@ -71,7 +71,7 @@ En el chat escribes `/` y el atajo (por ejemplo `/menu`) y el texto se pega solo
 ```
 *MENÚ EL MAFER* 🍗🔥
 
-*POLLOS ENTEROS — $200*
+*POLLOS* — Entero $200 · Medio $100 · Cuarto $55
 1️⃣ *Asado natural* — frijol, ensalada de col, salsa roja, cebolla y chiles asados
 2️⃣ *Asado bañado* (mango habanero, BBQ o búfalo) — ensalada de col, frijol y ranch
 3️⃣ *Campero* — frijol, ensalada de col y salsa · bañado +$15
